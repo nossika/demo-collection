@@ -1,0 +1,40 @@
+#container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#maze {
+    display: flex;
+    flex-direction: column;
+}
+#container > div {
+    margin: 15px;
+}
+#maze .row {
+    display: flex;
+    flex-direction: row;
+}
+
+#maze .block {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #dcdcdc;
+    cursor: pointer;
+}
+
+#maze .block[data-value="0"] {
+    background: #aaa;
+}
+
+#maze .path {
+    background: #e99;
+}
+
+#maze .block.begin {
+    background: #add;
+}
+
+#maze .block.end {
+    background: #add;
+}

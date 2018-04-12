@@ -1,0 +1,10 @@
+{
+  "name": "bezier",
+  "version": "0.1.0",
+  "description": "",
+  "main": "bezier.js",
+  "scripts": {
+  },
+  "author": "nossika",
+  "license": "ISC"
+}

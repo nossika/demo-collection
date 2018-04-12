@@ -1,0 +1,16 @@
+{
+  "name": "H5-audio-core",
+  "version": "0.1.0",
+  "description": "",
+  "main": "AudioCore.js",
+  "scripts": {},
+  "author": "nossika",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-preset-es2015": "^6.18.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-concat": "^2.6.1",
+    "gulp-uglify": "^2.0.0"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "name": "little-koa",
+  "version": "0.1.0",
+  "description": "",
+  "main": "little-koa.js",
+  "scripts": {
+    "dev": "node example.js"
+  },
+  "author": "nossika",
+  "license": "ISC"
+}

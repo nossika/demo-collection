@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>little-co</title>
+</head>
+<body>
+<script src="little-co.js"></script>
+<script>
+    function sleep (ms) {
+        return new Promise(res => {
+            setTimeout(() => {
+                res(Date.now())
+            }, ms);
+        });
+    }
+
+    function coFn (fn) {
+        return new Promise((res) => {
+            fn(res);
+        });
+    }
+
+    co(function* () {
+        console.log(1);
+        let a = yield sleep(500);
+        console.log(2);
+        let b = yield sleep(1000);
+        console.log(3, b - a);
+        let c = yield coFn(next => setTimeout(next, 2000, 'haha'));
+        console.log(c);
+    });
+</script>
+</body>
+</html>

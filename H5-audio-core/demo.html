@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>H5-audio-core - demo</title>
+    <style>
+        *{
+            padding: 0; margin: 0; border: none; outline: none;  }
+        html {
+            font-family: 'Microsoft YaHei', monospace, Helvetica, Arial;
+            font-size: 16px; }
+        .container {
+            display: flex;
+            flex-wrap: wrap;
+            background: #EFEBFF;
+            margin: 50px 20px;  }
+        .section {
+            width: 50%;
+            border: none; }
+        .wrapper.left {
+            padding: 0 10px 20px 20px;  }
+        .wrapper.right {
+            padding: 0 20px 20px 10px;  }
+        .section .title {
+            display: flex;
+            align-items: center;
+            font-size: 1.2rem;
+            justify-content: space-between;
+            height: 40px;
+            width: 100%;  }
+        .section .body {
+            height: 500px;
+            background: #fff;
+            width: 100%;  }
+        #iframe {
+            width: 100%;
+            height: 100%;
+            border: none;  }
+        #textarea {
+            width: 100%;
+            height: 100%;
+            font-family: 'Microsoft YaHei Mono', Courier, monospace;
+            font-size: 0.8rem;
+            line-height: 1.2rem;
+            color: #555;
+            resize: none;  }
+        #run-btn {
+            border-radius: 3px;
+            padding: 0.2rem 0.5rem;
+            font-size: 1rem;
+            letter-spacing: 0.1rem;
+            background: #d44f4f;
+            color: #fff;
+            cursor: pointer;  }
+        #run-btn:active {
+            background: #c43f3f;  }
+        @media (max-width: 768px) {
+            .section {
+                width: 100%; }
+            .wrapper.left {
+                padding: 0 20px 0 20px;  }
+            .wrapper.right {
+                padding: 0 20px 20px 20px;  }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="section">
+        <div class="wrapper left">
+            <div class="title">
+                <span class="text">Edit code here</span>
+                <button id="run-btn">run it</button>
+            </div>
+            <div class="body">
+                <textarea id="textarea"></textarea>
+            </div>
+        </div>
+    </div>
+    <div class="section">
+        <div class="wrapper right">
+            <div class="title">
+                <span class="text">Result</span>
+            </div>
+            <div class="body">
+                <iframe id="iframe"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+    <script>
+        let run_btn = document.querySelector('#run-btn');
+        let textarea = document.querySelector('#textarea');
+        let iframe = document.querySelector('#iframe');
+
+        textarea.value = `
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+.bold {
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+
+<div>title: <span id="title"></span></div>
+<div>author: <span id="author"></span></div>
+<div>time: <span id="time"></span></div>
+<div>buffered: <span id="buffered"></span></div>
+<div><button id="pre">pre</button><button id="next">next</button></div>
+lrc:
+<div id="lrc"></div>
+
+<script src="./AudioCore.min.js"><\/script>
+<script src="./util/ajax.js"><\/script>
+<script>
+let music_list = [
+    {src: 'https://nossika.com/statics/music/meiwan.mp3', lrc: './file/陈粒 - 没完.lrc', title: '没完', author: '陈粒'},
+    {src: 'https://nossika.com/statics/music/sleep-alone.mp3', lrc: './file/陈奕迅 - Sleep Alone.lrc', title: 'Sleep Alone', author: '陈奕迅'},
+    {src: 'https://nossika.com/statics/music/california-dreaming.mp3', lrc: './file/The Papas,The Mamas - California Dreaming (重庆森林).lrc', title: 'California Dreaming (重庆森林)', author: 'The Papas,The Mamas'},
+    {src: 'https://nossika.com/statics/music/demons.mp3', lrc: './file/Imagine Dragons - Demons.lrc', title: 'Demons', author: 'Imagine Dragons'},
+];
+
+let lrc_container = document.querySelector('#lrc');
+
+AudioCore.init({
+    list: music_list,
+    cur: Math.floor(Math.random() * music_list.length),
+    play: true
+});
+
+// update basic info & init lrc
+AudioCore.on('start', info => {
+    lrc_container.innerHTML = 'loading...';
+    ['title', 'author'].forEach(item => {document.querySelector('#' + item).innerText = info[item]});
+    ['buffered', 'time'].forEach(item => {document.querySelector('#' + item).innerText = '-'});
+
+    ajax({
+        url: info.lrc,
+        callback: data => {
+            let lrc = AudioCore.set_lrc(data);
+            lrc_container.innerHTML = '';
+            for (let time in lrc) {
+                lrc_container.innerHTML += \`<div data-time="\${time}">\${lrc[time]}</div>\`;
+            }
+        }
+    })
+});
+
+// update time info & lrc
+AudioCore.on('play', time => {
+    document.querySelector('#time').innerText = AudioCore.format_time(time.cur) + '/' + AudioCore.format_time(time.total);
+    let cur_lrc = AudioCore.cur_lrc(time.cur);
+    [].slice.call(lrc_container.querySelectorAll('div')).forEach(div => {
+        div.classList.remove('bold');
+        if (div.getAttribute('data-time') === cur_lrc.time) div.classList.add('bold');
+    });
+});
+
+// update buffered info
+AudioCore.on('buffer', buffered => {
+    document.querySelector('#buffered').innerText = (buffered[0][1] / AudioCore.info().duration * 100).toFixed(2) + '%';
+});
+
+// bind button event
+document.querySelector('#pre').addEventListener('click', () => AudioCore.play_pre());
+document.querySelector('#next').addEventListener('click', () => AudioCore.play_next());
+
+<\/script>
+</body>
+</html>
+        `;
+        run_btn.addEventListener('click', () => {
+            iframe.srcdoc = textarea.value;
+        });
+        run_btn.click();
+    </script>
+</body>
+</html>

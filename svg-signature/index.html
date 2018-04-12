@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>svg-signature</title>
+    <style>
+        body {
+            background: #333;
+        }
+        #sign {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin: -140px 0 0 -320px;
+            width: 600px;
+            height: 200px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 4px;
+            /*设置为2058（path-sign路径的总长度）或者更长*/
+            stroke-dasharray: 2058;
+            /*IE以及Edge不支持此动画*/
+            animation: dash 5s ease-out forwards;
+        }
+
+        @keyframes dash {
+            0%{
+                stroke-dashoffset: 2058;
+            }
+            100%{
+                stroke-dashoffset: 0;
+            }
+        }
+
+        #sign:before {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            content: "";
+            top: -10px;
+            left: -10px;
+            border-top: 3px solid #fff;
+            border-left: 3px solid #fff;
+        }
+        #sign:after {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            content: "";
+            bottom: 0;
+            right: -40px;
+            border-right: 3px solid #fff;
+            border-bottom: 3px solid #fff;
+        }
+
+    </style>
+</head>
+<body>
+<div id="sign">
+    <svg viewbox="0 0 450 150">
+        <use xlink:href="#path-sign"/>
+    </svg>
+</div>
+<svg width="0" height="0">
+    <defs>
+        <path id="path-sign" d="M17 68C17 68 75 10 84 22C94 34 8.999999 117.6667 6 117.6667C4 117.6667 126 6 139 22C153 39 45 111 62 116C62 116 90 126 143 81L139 83C139 83 112 110 123 115C134 120 166 82 156 79C156 79 155 73 148 79C141 86 195 78 201 76C206 73 173 88 194 95C215 102 181 119.6667 176 116.6667L174.6667 115C174.6667 115 179.89 130.8333 243 76C243 76 220 85 237 95C237 95 245.1091 108.5152 221.1301 114.1642C219.8473 114.4664 218.4727 114.7461 217 115C217 115 240.7801 118.8048 280.9186 79.10148C281.9353 78.09583 282.9625 77.06226 284 76C284 76 250 113 261 115C261 115 294.4544 95.98049 298.6667 59.33334C299.0833 55.70834 290.887 66.51762 294.3333 65.66666C321.3333 58.99999 370.4751 28.78736 377 19C377 19 290 113 294 114C298 116 339 42 437 24C437 24 365 41 344 69L343 72C343 72 344 107 348 116C348 116 431 93.33334 431 88.33334C431 88.33334 429.6666 77.33332 418.6667 82.00001C406.7267 87.06551 377.2676 108.1194 399.3333 116C408.6666 119.3333 433.6667 83.83334 437.6667 83.33334C437.6667 83.33334 406 112 415 115C424 118 447.6667 112.3333 448.6667 101.3333"/>
+    </defs>
+</svg>
+</body>
+</html>

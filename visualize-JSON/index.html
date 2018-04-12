@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Visualize JSON</title>
+    <style>
+
+        :root {
+            --text-light-color: #A3A3A3;
+            --text-string-color: #D14B48;
+            --text-number-color: #1C00CF;
+            --text-prop-color: #96309E;
+        }
+        .json-format {
+            color: #333333;
+            cursor: default;
+        }
+
+        .color-null {
+            color: var(--text-light-color);
+        }
+        .color-string {
+            color: var(--text-string-color);
+        }
+        .color-number {
+            color: var(--text-number-color);
+        }
+        .color-prop {
+            color: var(--text-prop-color);
+        }
+
+        .quote-content {
+            padding-left: 18px;
+            display: inline-block;
+            border-left: 1px solid #DCDCDC;
+        }
+
+        .quote-begin {
+            display: inline-block;
+            min-width: 10px;
+        }
+        .quote-begin:not(.empty), .quote-end:not(.empty) {
+            cursor: pointer;
+        }
+        .quote-begin:not(.empty):hover::after {
+            content: '-';
+            color: var(--text-light-color);
+        }
+
+        .hidden > .quote-begin:not(.empty)::after {
+            content: '...';
+            color: var(--text-light-color);
+        }
+
+        .hidden > .quote-content, .hidden > br {
+            display: none;
+        }
+
+        #preview {
+            border: 1px solid #f0f0f0;
+            padding: 20px;
+        }
+    </style>
+</head>
+<script src="./visualize-JSON.js"></script>
+<body>
+
+<section>
+    <textarea rows="6" placeholder="type JSON here" id="json"></textarea>
+</section>
+<section>
+    <button id="visualize">visualize</button>
+</section>
+<section>
+    <button id="example1">example1</button>
+</section>
+<section>
+    在<b>textarea</b>输入标准JSON，点击<b>visualize</b>渲染JSON树，点击example1可快速生成一个示例，可点击"["或"{"来展开/折叠数据
+</section>
+<section id="preview"></section>
+<script>
+    const eJson = document.querySelector('#json');
+    const eVisualize = document.querySelector('#visualize');
+    const ePreview = document.querySelector('#preview');
+    const eExample1 = document.querySelector('#example1');
+
+    eExample1.addEventListener('click', e => {
+        eJson.value = `{"name":"n","age":12,"interest":{"books":[{"name":"book1","author":"author1"},{"name":"book2","author":"author2"}],"movies":[]},"info":null}`;
+        visualizeJSON(JSON.parse(eJson.value), ePreview);
+    });
+
+    eVisualize.addEventListener('click', genJSON);
+    eJson.addEventListener('keydown', e => {
+        if (e.keyCode === 13) {
+            e.preventDefault();
+            genJSON();
+        }
+    });
+
+    function genJSON () {
+        const jsonStr = eJson.value.replace(/\s/g, '');
+        if (!jsonStr) return;
+        let json;
+        try {
+            json = JSON.parse(jsonStr);
+        } catch (e) {}
+        if (json !== undefined) {
+            visualizeJSON(json, ePreview);
+        } else {
+            ePreview.innerHTML = 'invalid JSON >.<';
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Bezier Drawer</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        canvas {
+            cursor: pointer;
+            border: 1px solid #ccc;
+        }
+    </style>
+</head>
+<body>
+<section>
+    <canvas width="300" height="300">
+    </canvas>
+</section>
+<section>
+    控制点：<span id="dots"></span>
+</section>
+<section>
+    在框内<b>单击</b>设置bezier曲线控制点，自动根据控制点生成bezier曲线，按<b>R键</b>重置。
+</section>
+<script src="./bezier.js"></script>
+<script>
+    let canvas = document.querySelector('canvas');
+    let eDots = document.querySelector('#dots');
+    let { width: canvasWidth, height: canvasHeight } = canvas;
+    let ctx = canvas.getContext('2d');
+    let initialDots = [];
+
+    // 画线
+    canvas.addEventListener('click', e => {
+        initialDots.push([e.offsetX, e.offsetY]);
+        eDots.innerText = JSON.stringify(initialDots);
+        draw();
+    });
+
+    // 重置
+    document.addEventListener('keydown', e => {
+        if (e.keyCode === 82) { // esc
+            initialDots = [];
+            eDots.innerText = JSON.stringify(initialDots);
+            draw();
+        }
+    });
+
+    function draw () {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        if (!initialDots.length) return;
+
+        // 画控制点
+        for (let dot of initialDots) {
+            ctx.beginPath();
+            ctx.arc(dot[0], dot[1], 2, 0, Math.PI * 2);
+            ctx.fillStyle = '#000';
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        // 连线控制点
+        ctx.beginPath();
+        ctx.moveTo(...initialDots[0]);
+        for (let dot of initialDots) {
+            ctx.lineTo(...dot);
+        }
+        ctx.strokeStyle = '#ccc';
+        ctx.stroke();
+        ctx.closePath();
+
+        // canvas原生api绘制bezier （二次bezier）
+//        let [begin, beginControl, endControl, end] = points;
+//        ctx.beginPath();
+//        ctx.moveTo(...begin);
+//        ctx.bezierCurveTo(...beginControl, ...endControl, ...end);
+//        ctx.strokeStyle = '#333';
+//        ctx.stroke();
+//        ctx.closePath();
+
+        // 手动绘制bezier
+        let bezierDots = bezier(initialDots);
+        if (!bezierDots) return;
+
+        ctx.beginPath();
+        ctx.moveTo(...bezierDots[0]);
+        bezierDots.forEach(dot => ctx.lineTo(...dot));
+        ctx.strokeStyle = '#666';
+        ctx.stroke();
+        ctx.closePath();
+    }
+
+
+</script>
+</body>
+</html>

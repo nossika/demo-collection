@@ -1,0 +1,270 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>dodge-game</title>
+    <style>
+        html{
+            font-family: 'Microsoft YaHei', Helvetica, Arial, monospace;
+            font-size: 16px;
+        }
+        #container{
+            width: 900px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        #canvas{
+            margin: 50px 0 10px 0;
+            width: 800px;
+            height: 600px;
+            border: 1px solid gray;
+            border-radius: 5px;
+        }
+        #info{
+            margin: 10px 0;
+        }
+        #info>span{
+            margin: 10px 20px;
+        }
+        #info .red{
+            color: red;
+        }
+        #intro{
+            margin: 10px;
+        }
+        #intro .key{
+            display: inline-block;
+            min-width: 20px;
+            text-align: center;
+            padding: 0 3px;
+            border: 1px solid #333;
+            border-radius: 3px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="container">
+    <canvas id="canvas"></canvas>
+    <div id="info">
+        <span>score: <span class="red" data-score></span></span>
+        <span>life: <span class="red" data-life></span></span>
+    </div>
+    <div id="intro">
+        <p>survive from dots crash!</p>
+        <p>press <span class="key">↑</span> <span class="key">↓</span> <span class="key">←</span> <span class="key">→</span> or mouse to move the red dot</p>
+        <p>press <span class="key">space</span> to pause game</p>
+    </div>
+</div>
+<script>
+    let dodge_game_util = (() => {
+                let _ctx, _ctx_w, _ctx_h, _suspended, _dot_color, _max_v;
+    let _dot_list, _dot_me;
+    let score, life, on_info;
+    class Dot {
+        constructor (config) {
+            this.x = config.x || 0;
+            this.y = config.y || 0;
+            this.v_x = config.v_x || 0;
+            this.v_y = config.v_y || 0;
+            this.r = config.r || 3;
+            this.color = config.color || _dot_color;
+            if(config.shell) {
+                this.shell = config.shell
+            }
+        }
+    }
+    let random_num = (max, min = 0) => {
+        return Math.floor(min + Math.random() * (max + 1));
+    };
+    let util = {
+        init (canvas, config = {}) {
+            _ctx = canvas.getContext('2d'); // context
+            _ctx_w = canvas.width = canvas.offsetWidth; // canvas宽
+            _ctx_h = canvas.height = canvas.offsetHeight; // canvas高
+            _dot_list = new Set(); // 当前dot集合
+            _dot_color = config.dot_color || '#000'; // dot样式
+            _max_v = config.max_v || 20; // dot的最高速度
+            _suspended = true; // 是否暂停
+            life = config.life || 3; // 玩家生命
+            score = 0; // 玩家分数
+            on_info = config.on_info; // 玩家信息更新
+
+            util.auto_add_dot(config.max_dot || 50);
+            _dot_me = new Dot({
+                x: _ctx_w / 2,
+                y: _ctx_h / 2,
+                v_x: 0,
+                v_y: 0,
+                r: 6,
+                color: config.me_color || 'red',
+                shell: 100
+            });
+
+            setTimeout(() => {
+                _suspended = false;
+            util.start();
+        }, 500);
+        },
+        resize () {
+            _ctx_w = canvas.width = canvas.offsetWidth;
+            _ctx_h = canvas.height = canvas.offsetHeight;
+        },
+        start () {
+            let repeat = () => {
+                if(_suspended) return;
+                util.clear();
+                util.render();
+                requestAnimationFrame(repeat);
+            };
+            requestAnimationFrame(repeat);
+        },
+        suspend () {
+            _suspended = !_suspended;
+            util.start();
+        },
+        add_dot (config) {
+            let dot;
+            if (config) {
+                dot = new Dot(config);
+            } else {
+                let [x, y, v_x, v_y] = [
+                    random_num(_ctx_w),
+                    random_num(_ctx_h),
+                    random_num(_max_v, 1) * (Math.random() > 0.5 ? -1 : 1) / 10,
+                    random_num(_max_v, 1) * (Math.random() > 0.5 ? -1 : 1) / 10
+                ];
+                switch (random_num(3)) {
+                    case 0:
+                        y = 0;
+                        v_y = Math.abs(v_y);
+                        break;
+                    case 1:
+                        x = _ctx_w;
+                        v_x = -Math.abs(v_x);
+                        break;
+                    case 2:
+                        y = _ctx_h;
+                        v_y = -Math.abs(v_y);
+                        break;
+                    case 3:
+                        x = 0;
+                        v_x = Math.abs(v_x);
+                        break;
+                }
+                dot = new Dot({x, y, v_x, v_y});
+            }
+            _dot_list.add(dot);
+        },
+        auto_add_dot (dot_num) {
+            let interval = setInterval(() => {
+                        if(_dot_list.size > dot_num) {
+                clearInterval(interval);
+                return;
+            }
+            util.add_dot();
+        }, 2000);
+        },
+        clear () {
+            _ctx.clearRect(0, 0, _ctx_w, _ctx_h);
+        },
+        render () {
+            util.update_dot(_dot_me);
+            util.render_dot(_dot_me);
+            for(let dot of _dot_list) {
+                util.update_dot(dot);
+                util.render_dot(dot);
+                util.check_crash(dot);
+            }
+            on_info && on_info({score, life});
+        },
+        check_crash (dot) {
+            score++;
+            if(!_dot_me.shell) {
+                let dis = Math.pow(Math.pow(dot.x - _dot_me.x, 2) + Math.pow(dot.y - _dot_me.y, 2), 1/2);
+                if(dis < _dot_me.r + dot.r) {
+                    _dot_me.shell = 100;
+                    life--;
+                }
+            }
+        },
+        update_dot (dot) {
+            dot.x += dot.v_x;
+            dot.y += dot.v_y;
+            dot.x = dot.x < 0 ? _ctx_w
+                    : (dot.x > _ctx_w) ? 0 : dot.x;
+            dot.y = dot.y < 0 ? _ctx_h
+                    : (dot.y > _ctx_h) ? 0 : dot.y;
+            if(dot.shell && dot.shell > 0) dot.shell--;
+        },
+        render_dot (dot) {
+            if (dot.shell) {
+                _ctx.beginPath();
+                _ctx.arc(dot.x, dot.y, dot.r + 2, 0, 2*Math.PI);
+                _ctx.closePath();
+                _ctx.fillStyle = '#000';
+                _ctx.fill();
+            }
+            _ctx.beginPath();
+            _ctx.arc(dot.x, dot.y, dot.r, 0, 2*Math.PI);
+            _ctx.closePath();
+            _ctx.fillStyle = dot.color;
+            _ctx.fill();
+        },
+        get_me () {
+            return _dot_me;
+        }
+    };
+    return util;
+    })();
+
+    let canvas = document.querySelector('#canvas');
+    let life_span = document.querySelector('#info [data-life]');
+    let score_span = document.querySelector('#info [data-score]');
+    let dot_me;
+
+    let on_info = (info) => {
+        life_span.innerText = info.life;
+        score_span.innerText = info.score;
+        if (info.life <= 0) {
+            alert(`your score: ${info.score}`);
+            init();
+        }
+    };
+
+    let init = () => {
+        dodge_game_util.init(canvas, {
+            on_info: on_info
+        });
+        dot_me = dodge_game_util.get_me()
+    };
+
+    document.addEventListener('keydown',function(e){
+        if(e.keyCode === 37 || e.keyCode === 39){ // 左右
+            e.preventDefault();
+            dot_me.v_x += e.keyCode === 37 ? -1 : 1;
+            dot_me.v_x = Math.max(-3, dot_me.v_x);
+            dot_me.v_x = Math.min(3, dot_me.v_x);
+        }else if(e.keyCode === 38 || e.keyCode === 40){ // 上下
+            e.preventDefault();
+            dot_me.v_y += e.keyCode === 38 ? -1 : 1;
+            dot_me.v_y = Math.max(-3, dot_me.v_y);
+            dot_me.v_y = Math.min(3, dot_me.v_y);
+        }else if(e.keyCode === 32){ // 空格
+            e.preventDefault();
+            dodge_game_util.suspend();
+        }
+    });
+
+    canvas.addEventListener('mousemove', (e) => { // 鼠标移动
+        dot_me.x = e.offsetX;
+        dot_me.y = e.offsetY;
+        dot_me.v_x = dot_me.v_y = 0;
+    });
+
+    init();
+</script>
+</body>
+</html>
