@@ -36,6 +36,10 @@ JSON可视化小工具，[在线DEMO](https://nossika.github.io/demo-collection/
 
 基于es6的promise和generator模拟类async/await的同步语法
 
+#### little-cjs
+
+模拟commonJs的模块化加载
+
 #### svg-signature
 
 用svg实现的文字手写动画，[在线DEMO](https://nossika.github.io/demo-collection/svg-signature/)
