@@ -6,7 +6,7 @@
 
 #### little-koa
 
-模拟koa2基于async/await的中间件模式，进项目目录`npm run dev`测试
+实现koa2基于async/await的中间件模式，`cd little-koa && npm run dev`测试
 
 #### visualize-JSON
 
@@ -34,7 +34,11 @@ JSON可视化小工具，[在线DEMO](https://nossika.github.io/demo-collection/
 
 #### little-co
 
-基于es6的promise和generator模拟类async/await的同步语法
+基于ES6的Promise和Generator实现类async/await的同步语法
+
+#### mini-promise
+
+实现Promise的基本类，和then、catch等api
 
 #### little-cjs
 

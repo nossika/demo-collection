@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>little-promise</title>
+</head>
+<body>
+<script src="./mini-promise.js"></script>
+<script>
+
+    const p1 = new MiniPromise((res, rej) => {
+        setTimeout(res, 700, 'data');
+    }).then(d => {
+        return d + 1;
+    }).then(d => {
+        console.log('p1', d, 'from then');
+        return new MiniPromise((res, rej) => {
+            setTimeout(res, 500, d);
+        });
+    }).then(d => {
+        console.log('p1', d, 'from another promise');
+    });
+
+    const p2 = new MiniPromise((res, rej) => {
+        setTimeout(rej, 500, 'error1');
+    }).then(d => {
+        console.log('p2', 'success handle', d);
+        return null;
+    }, e => {
+        console.log('p2', 'error handle', e);
+        return e;
+    }).then(d => {
+        throw d;
+    }).catch(e => {
+        console.log('p2', 'catch', e);
+        return e;
+    }).then(e => {
+        console.log('p2', 'after catch', e);
+    });
+
+</script>
+</body>
+</html>
