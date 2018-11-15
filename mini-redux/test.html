@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+  <head>
+      <title>mini-redux</title>
+  </head>
+  <body>
+    <script src="./mini-redux.js"></script>
+    <script>
+      function reducer1(state = 0, action) {
+        if (action.type === 'action1') {
+          return state + 1;
+        }
+        return state;
+      }
+    
+      function reducer2(state = 0, action) {
+        if (action.type === 'action2') {
+          return state + 1;
+        }
+        return state;
+      }
+    
+      function reducer3(state = 0, action) {
+        if (action.type === 'action3') {
+          return state + 1;
+        }
+        return state;
+      }
+    
+      const store = createStore(
+        combineReducers({
+          reducer1,
+          reducer23: combineReducers({
+            reducer2,
+            reducer3,
+          }),
+        }),
+      );
+    
+      const state1 = store.getState();
+      console.log('state1: ', state1);
+    
+      store.dispatch({ type: 'action1' });
+      store.dispatch({ type: 'action2' });
+    
+      const state2 = store.getState();
+      console.log('state2: ', state2);
+    
+      store.dispatch({ type: 'action3' });
+    
+      const state3 = store.getState();
+      console.log('state3: ', state3);
+    
+    </script>
+  </body>
+</html>

@@ -40,6 +40,10 @@ JSON可视化小工具，[在线DEMO](https://nossika.github.io/demo-collection/
 
 实现Promise的基本类，和then、catch等api
 
+#### mini-redux
+
+实现redux中createStore和combineReducers
+
 #### little-cjs
 
 模拟commonJs的模块化加载
