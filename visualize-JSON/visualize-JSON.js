@@ -67,7 +67,7 @@ function visualizeJSON (json, containerEl) {
             if (!eProp) return;
             eProp.classList.toggle('hidden');
         });
-        eWrapper.classList.add('json-format');
+        eWrapper.classList.add('visualize-json');
         return eWrapper;
     }
     containerEl.appendChild(getTreeNode(json));

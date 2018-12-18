@@ -1,0 +1,46 @@
+.visualize-json {
+  --text-light-color: #A3A3A3;
+  --text-string-color: #D14B48;
+  --text-number-color: #1C00CF;
+  --text-prop-color: #96309E;
+}
+
+.visualize-json .color-null {
+  color: var(--text-light-color);
+}
+.visualize-json .color-string {
+  color: var(--text-string-color);
+}
+.visualize-json .color-number {
+  color: var(--text-number-color);
+}
+.visualize-json .color-prop {
+  color: var(--text-prop-color);
+}
+
+.visualize-json .quote-content {
+  padding-left: 18px;
+  display: inline-block;
+  border-left: 1px solid #DCDCDC;
+}
+
+.visualize-json .quote-begin {
+  display: inline-block;
+  min-width: 10px;
+}
+.visualize-json .quote-begin:not(.empty), .visualize-json .quote-end:not(.empty) {
+  cursor: pointer;
+}
+.visualize-json .quote-begin:not(.empty):hover::after {
+  content: '-';
+  color: var(--text-light-color);
+}
+
+.visualize-json .hidden > .quote-begin:not(.empty)::after {
+  content: '...';
+  color: var(--text-light-color);
+}
+
+.visualize-json .hidden > .quote-content, .visualize-json .hidden > br {
+  display: none;
+}

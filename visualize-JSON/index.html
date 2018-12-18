@@ -4,82 +4,51 @@
     <meta charset="UTF-8">
     <title>Visualize JSON</title>
     <style>
-
-        :root {
-            --text-light-color: #A3A3A3;
-            --text-string-color: #D14B48;
-            --text-number-color: #1C00CF;
-            --text-prop-color: #96309E;
+        html {
+            font-size: 14px;
         }
-        .json-format {
-            color: #333333;
-            cursor: default;
+        section {
+            display: flex;
+            justify-content: center;
+            margin: 10px;
         }
 
-        .color-null {
-            color: var(--text-light-color);
-        }
-        .color-string {
-            color: var(--text-string-color);
-        }
-        .color-number {
-            color: var(--text-number-color);
-        }
-        .color-prop {
-            color: var(--text-prop-color);
+        #json-input {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
         }
 
-        .quote-content {
-            padding-left: 18px;
-            display: inline-block;
-            border-left: 1px solid #DCDCDC;
-        }
-
-        .quote-begin {
-            display: inline-block;
-            min-width: 10px;
-        }
-        .quote-begin:not(.empty), .quote-end:not(.empty) {
-            cursor: pointer;
-        }
-        .quote-begin:not(.empty):hover::after {
-            content: '-';
-            color: var(--text-light-color);
-        }
-
-        .hidden > .quote-begin:not(.empty)::after {
-            content: '...';
-            color: var(--text-light-color);
-        }
-
-        .hidden > .quote-content, .hidden > br {
-            display: none;
+        #tip {
+            color: #333;
         }
 
         #preview {
+            display: block;
             border: 1px solid #f0f0f0;
             padding: 20px;
+            font-size: 16px;
         }
-    </style>
-</head>
-<script src="./visualize-JSON.js"></script>
-<body>
 
-<section>
-    <textarea rows="6" placeholder="type JSON here" id="json"></textarea>
+    </style>
+    <link rel="stylesheet" href="./visualize-JSON.css"/>
+    <script src="./visualize-JSON.js"></script>
+</head>
+
+<body>
+<section id="tip">
+    在下面<b>输入框</b>输入标准JSON，回车或点击<b>可视化JSON</b>渲染JSON树，预览界面可点击"["或"{"来展开/折叠字段，<button id="example1">查看示例</button>
 </section>
 <section>
-    <button id="visualize">visualize</button>
+    <textarea id="json-input" rows="6" placeholder="输入标准JSON"></textarea>
 </section>
 <section>
-    <button id="example1">example1</button>
+    <button id="visualize">可视化JSON</button>
 </section>
-<section>
-    在<b>textarea</b>输入标准JSON，点击<b>visualize</b>渲染JSON树，点击example1可快速生成一个示例，可点击"["或"{"来展开/折叠数据
-</section>
+
 <section id="preview"></section>
 <script>
-    const eJson = document.querySelector('#json');
+    const eJson = document.querySelector('#json-input');
     const eVisualize = document.querySelector('#visualize');
     const ePreview = document.querySelector('#preview');
     const eExample1 = document.querySelector('#example1');
