@@ -1,0 +1,24 @@
+<!doctype html>
+<head>
+  <title>ticket system</title>
+</head>
+<body>
+  <script src="./ticket-system.js"></script>
+  <script>
+
+    const ts = new TicketSystem();
+
+    const order1 = ts.buy();
+    console.log('order1:', order1);
+
+    const order2 = ts.buy(5);
+    console.log('order2:', order2);
+
+    // ts.buy(3);
+    // ts.buy(4);
+    // ts.buy(5);
+
+    console.log('current seats:', ts.getSeats());
+
+  </script>
+</body>
