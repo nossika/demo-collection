@@ -46,7 +46,7 @@ function visualizeJSON (json, containerEl) {
                         let arr = [];
                         objectProps.forEach(prop => {
                             const dataSubPath = path.concat(prop).join('-');
-                            arr.push(`<span data-path="${dataSubPath}" class="prop"><span data-path="${dataSubPath}" class="color-prop">"${prop}"</span>: </span>` + rowHTML(value[prop], path.concat(prop)));
+                            arr.push(`<span data-path="${dataSubPath}" class="prop"><span data-path="${dataSubPath}" class="color-prop">${prop}</span>: </span>` + rowHTML(value[prop], path.concat(prop)));
                         });
                         html += arr.join(`<span class="comma">,</span><br/>`);
                         html += '</span><br/>';
