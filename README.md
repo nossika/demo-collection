@@ -10,27 +10,31 @@
 
 #### visualize-JSON
 
-JSON可视化小工具，[在线DEMO](https://nossika.github.io/demo-collection/visualize-JSON/)
+JSON可视化小工具，[去体验](https://nossika.github.io/demo-collection/visualize-JSON/)
 
 #### game-avalon
 
-网页版阿瓦隆桌游，[在线DEMO](https://nossika.github.io/demo-collection/game-avalon/)
+网页版阿瓦隆桌游，[去体验](https://nossika.github.io/demo-collection/game-avalon/)
+
+#### game-snake
+
+经典游戏贪吃蛇，[去体验](https://nossika.github.io/demo-collection/game-snake/)
 
 #### bezier
 
-绘制贝塞尔曲线，[在线DEMO](https://nossika.github.io/demo-collection/bezier/test.html)
+绘制贝塞尔曲线，[去体验](https://nossika.github.io/demo-collection/bezier/test.html)
 
 #### maze-solution-by-BFS
 
-用BFS算法求迷宫解，[在线DEMO](https://nossika.github.io/demo-collection/maze-solution-by-BFS/)
+用BFS算法求迷宫解，[去体验](https://nossika.github.io/demo-collection/maze-solution-by-BFS/)
 
 #### H5-audio-core
 
-对H5的audio对象进一步封装，增加lrc解析功能，[在线DEMO](https://nossika.github.io/demo-collection/H5-audio-core/demo.html)
+对H5的audio对象进一步封装，增加lrc解析功能，[去体验](https://nossika.github.io/demo-collection/H5-audio-core/demo.html)
 
 #### dodge-game
 
-躲避子弹的无聊小游戏，[在线DEMO](https://nossika.github.io/demo-collection/dodge-game/)
+躲避子弹的无聊小游戏，[去体验](https://nossika.github.io/demo-collection/dodge-game/)
 
 #### little-co
 
@@ -50,7 +54,7 @@ JSON可视化小工具，[在线DEMO](https://nossika.github.io/demo-collection/
 
 #### svg-signature
 
-用svg实现的文字手写动画，[在线DEMO](https://nossika.github.io/demo-collection/svg-signature/)
+用svg实现的文字手写动画，[去体验](https://nossika.github.io/demo-collection/svg-signature/)
 
 ## 补充
 
