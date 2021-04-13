@@ -2,57 +2,61 @@
 
 随手写的小玩意儿合集
 
-## 简介
+## 目录
 
-#### little-koa
+### little-koa
 
 实现koa2基于async/await的中间件模式，`cd little-koa && npm run dev`测试
 
-#### visualize-JSON
+### visualize-JSON
 
 JSON可视化小工具，[去体验](https://nossika.github.io/demo-collection/visualize-JSON/)
 
-#### game-avalon
+### game-avalon
 
 网页版阿瓦隆桌游，[去体验](https://nossika.github.io/demo-collection/game-avalon/)
 
-#### game-snake
+### game-snake
 
 经典游戏贪吃蛇，[去体验](https://nossika.github.io/demo-collection/game-snake/)
 
-#### bezier
+### bezier
 
 绘制贝塞尔曲线，[去体验](https://nossika.github.io/demo-collection/bezier/test.html)
 
-#### maze-solution-by-BFS
+### maze-solution-by-BFS
 
 用BFS算法求迷宫解，[去体验](https://nossika.github.io/demo-collection/maze-solution-by-BFS/)
 
-#### H5-audio-core
+### H5-audio-core
 
 对H5的audio对象进一步封装，增加lrc解析功能，[去体验](https://nossika.github.io/demo-collection/H5-audio-core/demo.html)
 
-#### dodge-game
+### dodge-game
 
 躲避子弹的无聊小游戏，[去体验](https://nossika.github.io/demo-collection/dodge-game/)
 
-#### little-co
+### little-co
 
 基于ES6的Promise和Generator实现类async/await的同步语法
 
-#### mini-promise
+### mini-promise
 
 实现Promise的基本类，和then、catch等api
 
-#### mini-redux
+### mini-redux
 
 实现redux中createStore和combineReducers
 
-#### little-cjs
+### little-cjs
 
 模拟commonJs的模块化加载
 
-#### svg-signature
+### batch-request
+
+指定并发量，批量发起网络请求
+
+### svg-signature
 
 用svg实现的文字手写动画，[去体验](https://nossika.github.io/demo-collection/svg-signature/)
 
