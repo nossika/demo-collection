@@ -1,96 +1,73 @@
 const https = require('https');
 
-class Emitter {
-  channels = {};
-  on(channel, callback) {
-    this.channels[channel] = callback;
-  }
-  emit(channel, ...data) {
-    if (typeof this.channels[channel] !== 'function') {
-      return;
-    }
+const request = async (url) => {
+  return new Promise((resolve, reject) => {
+    const req = https.get(url, (res) => {
+      let data = '';
+      res.on('data', chunk => data += chunk);
+      res.on('end', () => resolve(data));
+    
+    });
 
-    this.channels[channel](...data);
-  }
-}
-
-const CHECK_TASK_CHANNEL = 'check_task';
-const REQ_TIMEOUT = 10e3;
-
-const batchRequest = async (urls, concurrent = 1) => {
-  console.log(`[batchRequest] start`);
-
-  return new Promise(async (resolve) => {
-    const responses = [];
-    const emitter = new Emitter();
-    const clients = [];
-    let current = 0;
-
-    // 检查是否有新任务，有就执行，没有则等待结果确定后返回。
-    const checkAndRunTask = async () => {
-      const i = current;
-      const url = urls[i];
-
-      if (!url) {
-        // 必须先等待全部请求结束，否则可能有些请求还未返回就resolve了
-        await Promise.all(clients);
-        resolve(responses);
-        return;
-      }
-
-      const client = doRequest(url)
-      .catch(() => {
-        // 失败则把res置空并resolve
-        return '';
-      }).then(res => {
-        responses[i] = res;
-
-        // 每次有任务结束（无论成功失败），才推入下一个任务，保证并发数不超过concurrent
-        emitter.emit(CHECK_TASK_CHANNEL);
-      });
-
-      clients.push(client);
-  
-      current += 1;
-    };
-  
-    emitter.on(CHECK_TASK_CHANNEL, checkAndRunTask);
-  
-    for (let i = 0; i < concurrent; i++) {
-      await checkAndRunTask();
-    }
+    req.on('error', (err) => reject(err));
   });
 };
 
-const doRequest = async (url) => {
-  console.log(`[doRequest] start ${url}`);
-
-  return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => {
-      console.log(`[doRequest] timeout ${url}`);
-      client.abort();
-      reject(new Error(`req ${url} timeout`));
-    }, REQ_TIMEOUT);
-
-    const client = https.get(url, res => {
-      console.log(`[doRequest] success ${url}`);
-
-      const body = [];
-      res.on('data', chunk => {
-        body.push(chunk);
-      });
-
-      res.on('end', () => {
-        resolve(Buffer.concat(body).toString());
-        clearTimeout(timer);
-      });
-    }).on('error', err => {
-      console.log(`[doRequest] fail ${url}`);
-
-      reject(err);
-      clearTimeout(timer);
+const doRequest = async (url, callback) => {
+  const result = await request(url)
+    .then(res => {
+      return {
+        content: res,
+        error: '',
+      }
+    })
+    .catch((error) => {
+      return {
+        content: '',
+        error: String(error),
+      }
     });
-  });
+
+  callback(result);
+};
+
+const batchRequest = async (urls, concurrent = 1) => {
+  return new Promise((resolve => {
+    let currentConcurrent = 0;
+    const results = [];
+    const remainTasks = urls.map((url, i) => {
+      return {
+        url,
+        i,
+      };
+    });
+  
+    const checkAndExecTasks = () => {
+      // 当结果数量等于输入时，认为整体任务结束，根据执行前的任务序号重新排序后返回
+      if (results.length >= urls.length) {
+        const resps = results.sort((a, b) => a.i < b.i ? -1 : 1).map(r => r.result);
+        resolve(resps);
+      }
+
+      // 仅当并发数有空闲，且队列有剩余任务时，取一个任务出来执行
+      while (currentConcurrent < concurrent && remainTasks.length) {
+        const task = remainTasks.shift();
+        currentConcurrent += 1;
+        doRequest(task.url, (result) => {
+          currentConcurrent -= 1;
+          results.push({
+            i: task.i,
+            result,
+          });
+
+          // 每个任务完成后，重新检查并执行新任务
+          checkAndExecTasks();
+        });
+      }
+    };
+
+    checkAndExecTasks();
+  }));
 };
 
 module.exports = batchRequest;
