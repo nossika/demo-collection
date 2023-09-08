@@ -21,6 +21,9 @@ function visualizeJSON (json, containerEl) {
                 case 'undefined':
                     html = `<span class="color-null">${value}</span>`;
                     break;
+                case 'boolean':
+                    html = `<span class="color-boolean">${value}</span>`;
+                    break;
                 case 'number':
                     html = `<span class="color-number">${value}</span>`;
                     break;
