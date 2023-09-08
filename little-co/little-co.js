@@ -1,11 +1,20 @@
-function co (generator) {
-    const g = generator();
-    function run (promise) {
-        if(!promise) return;
-        promise.then((value)=>{
-            run(g.next(value).value);
-        });
+function co(generator) {
+  const g = generator();
+
+  const run = (prev) => {
+    const { value, done } = g.next(prev);
+    if (done) return;
+
+    if (value instanceof Promise) {
+      value.then((v)=>{
+        run(v);
+      });
+      return;
     }
-    run(g.next().value);
+
+    run(value);
+  }
+
+  run();
 }
 

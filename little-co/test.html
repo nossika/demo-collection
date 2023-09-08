@@ -16,19 +16,20 @@
     }
 
     function coFn (fn) {
-        return new Promise((res) => {
-            fn(res);
+        return new Promise((resolve) => {
+            fn(resolve);
         });
     }
 
     co(function* () {
-        console.log(1);
-        let a = yield sleep(500);
+        const hello = yield 'hello';
+        console.log(1, hello);
+        const t1 = yield sleep(500);
         console.log(2);
-        let b = yield sleep(1000);
-        console.log(3, b - a);
-        let c = yield coFn(next => setTimeout(next, 2000, 'haha'));
-        console.log(c);
+        const t2 = yield sleep(1000);
+        console.log(3, t2 - t1);
+        const result = yield coFn(next => setTimeout(next, 2000, 'haha'));
+        console.log(4, result);
     });
 </script>
 </body>
