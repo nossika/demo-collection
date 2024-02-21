@@ -12,7 +12,9 @@ module.exports = {
     return ast;
   },
   ast2File: (ast, file) => {
-    const { code } = babelGenerator.default(ast);
+    const { code } = babelGenerator.default(ast, {
+      retainLines: true,
+    });
     const dirname = path.dirname(file);
     fs.mkdirSync(dirname, { recursive: true });
     fs.writeFileSync(file, code);
