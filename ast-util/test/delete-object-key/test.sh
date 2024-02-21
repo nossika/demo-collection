@@ -1,0 +1,1 @@
+node ../../index.js delete-object-key test-file.js aa -o ../../output

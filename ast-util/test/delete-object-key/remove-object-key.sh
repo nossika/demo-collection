@@ -1,1 +1,0 @@
-node ../../index.js delete-object-key file-with-object.js aa -o ../../output
